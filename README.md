@@ -69,5 +69,5 @@ Setelah build, hasil static ada di folder `out/`.
 
 ## Lisensi
 
-Gunakan sesuai kebutuhan personal/portfolio.
+Copyright @ 2026 HRAFSA, All Rights Reserved
 

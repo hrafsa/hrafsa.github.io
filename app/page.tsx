@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const tickerItems = [
@@ -11,32 +12,19 @@ const navItems = ["About", "Projects", "Experience", "Contact"];
 const skills = ["HTML", "CSS", "JavaScript", "React", "PHP", "Laravel", "Next.js", "Tailwind", "MySQL"];
 const heroStats = [
   { value: "1+", label: "Years Experience" },
-  { value: "2", label: "Projects Shipped" },
+  { value: "1", label: "Projects Shipped" },
   { value: "9", label: "Tech Skills" },
-  { value: "2.4k", label: "GitHub Stars" },
+  { value: "115k+", label: "Visitors" },
 ];
 const projects = [
   {
     title: "MLBB Draft",
     desc: "Open-source web app for drafting Mobile Legends teams like professionals analyzers.",
     tag: "Open Source",
-    demoUrl: "https://hrafsa.github.io",
-    sourceUrl: "https://github.com/hrafsa",
-  },
-  {
-    title: "Shipfast",
-    desc: "Open-source CLI boilerplate with 2.4k GitHub stars.",
-    tag: "Open Source",
-    demoUrl: "https://hrafsa.github.io",
-    sourceUrl: "https://github.com/hrafsa",
-  },
-  {
-    title: "Luma",
-    desc: "Headless e-commerce platform built with Next.js and Stripe.",
-    tag: "Commerce Stack",
-    demoUrl: "https://hrafsa.github.io",
-    sourceUrl: "https://github.com/hrafsa",
-  },
+    image: "/images/mlbb-draft.png",
+    demoUrl: "https://mlbb-draft.vercel.app",
+    sourceUrl: "https://github.com/hrafsa/mlbb-draft",
+  }
 ];
 
 export default function Home() {
@@ -67,7 +55,7 @@ export default function Home() {
       <header className="sticky top-0 z-40 border-b border-ink bg-paper/95 backdrop-blur">
         <div className="w-full border-b border-ink">
           <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 px-6 py-2 font-mono text-[11px] uppercase tracking-[0.16em] md:grid-cols-3">
-            <span className="py-1 md:border-r md:border-ink">Vol. 1</span>
+            <span className="py-1 md:border-r md:border-ink">Vol. 22</span>
             <span className="py-1 md:border-r md:border-ink md:px-4 md:text-center">Edition 0319</span>
             <span className="py-1 md:text-right">{editionDate}</span>
           </div>
@@ -229,7 +217,19 @@ export default function Home() {
           <div className="mt-8 grid gap-6 md:grid-cols-3">
             {projects.map((project) => (
               <article key={project.title} className="border border-ink bg-paper transition-all duration-200 ease-out hover:-translate-x-[3px] hover:-translate-y-[3px] hover:bg-muted hover:shadow-[5px_5px_0_0_#111111]">
-                <div className="min-h-44 border-b border-ink bg-muted [background-image:radial-gradient(#000_1px,transparent_1px)] [background-size:14px_14px]" aria-hidden="true" />
+                {project.image ? (
+                  <div className="relative min-h-44 border-b border-ink bg-muted">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
+                ) : (
+                  <div className="min-h-44 border-b border-ink bg-muted [background-image:radial-gradient(#000_1px,transparent_1px)] [background-size:14px_14px]" aria-hidden="true" />
+                )}
                 <div className="p-6">
                   <p className="font-ui text-[11px] uppercase tracking-[0.14em] text-red">{project.tag}</p>
                   <h3 className="mt-2 text-[24px] font-bold">{project.title}</h3>
@@ -337,7 +337,7 @@ export default function Home() {
             </div>
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.16em]">Edition</p>
-              <p className="mt-3 font-mono text-[12px] text-ink-soft">Vol. 17</p>
+              <p className="mt-3 font-mono text-[12px] text-ink-soft">Vol. 22</p>
               <p className="font-mono text-[12px] text-ink-soft">Edition 0319</p>
             </div>
           </div>
