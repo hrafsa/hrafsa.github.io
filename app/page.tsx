@@ -23,7 +23,7 @@ const projects = [
     tag: "Open Source",
     image: "/images/mlbb-draft.png",
     demoUrl: "https://mlbb-drafting.vercel.app",
-    sourceUrl: "https://github.com/hrafsa/mlbb-draft",
+    sourceUrl: "https://github.com/hrafsa/mlbb-drafting",
   }
 ];
 
