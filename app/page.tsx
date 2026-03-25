@@ -22,7 +22,7 @@ const projects = [
     desc: "Open-source web app for drafting Mobile Legends teams like professionals analyzers.",
     tag: "Open Source",
     image: "/images/mlbb-draft.png",
-    demoUrl: "https://mlbb-draft.vercel.app",
+    demoUrl: "https://mlbb-drafting.vercel.app",
     sourceUrl: "https://github.com/hrafsa/mlbb-draft",
   }
 ];
