@@ -21,9 +21,8 @@ const projects = [
     description:
       "A focused drafting workspace for planning Mobile Legends team compositions through a clearer, analysis-first flow.",
     image: "/images/mlbb-draft.png",
-<<<<<<< HEAD
-    demoUrl: "https://mlbb-draft.vercel.app",
-    sourceUrl: "https://github.com/hrafsa/mlbb-draft",
+    demoUrl: "https://mlbb-drafting.vercel.app",
+    sourceUrl: "https://github.com/hrafsa/mlbb-drafting",
     tags: ["Responsive UI", "Draft analysis", "Open source"],
   },
 ];
@@ -43,11 +42,6 @@ const experiences = [
     description:
       "Handled user reports and kept support tickets clear, categorized, and ready for follow-up.",
   },
-=======
-    demoUrl: "https://mlbb-drafting.vercel.app",
-    sourceUrl: "https://github.com/hrafsa/mlbb-drafting",
-  }
->>>>>>> 32288f07ef20c4dd5da24b4b578b80d68f081212
 ];
 
 export default function Home() {
