@@ -3,346 +3,333 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-const tickerItems = [
-  "Open to remote full-stack opportunities",
-  "Focus on education",
+type Theme = "light" | "dark";
+
+const navItems = [
+  { label: "Work", href: "#work" },
+  { label: "About", href: "#about" },
+  { label: "Experience", href: "#experience" },
+  { label: "Contact", href: "#contact" },
 ];
 
-const navItems = ["About", "Projects", "Experience", "Contact"];
-const skills = ["HTML", "CSS", "JavaScript", "React", "PHP", "Laravel", "Next.js", "Tailwind", "MySQL"];
-const heroStats = [
-  { value: "1+", label: "Years Experience" },
-  { value: "1", label: "Projects Shipped" },
-  { value: "9", label: "Tech Skills" },
-  { value: "115k+", label: "Visitors" },
-];
 const projects = [
   {
     title: "MLBB Draft",
-    desc: "Open-source web app for drafting Mobile Legends teams like professionals analyzers.",
-    tag: "Open Source",
+    year: "2026",
+    type: "Web application",
+    role: "Design & development",
+    description:
+      "A focused drafting workspace for planning Mobile Legends team compositions through a clearer, analysis-first flow.",
     image: "/images/mlbb-draft.png",
     demoUrl: "https://mlbb-draft.vercel.app",
     sourceUrl: "https://github.com/hrafsa/mlbb-draft",
-  }
+    tags: ["Responsive UI", "Draft analysis", "Open source"],
+  },
+];
+
+const experiences = [
+  {
+    year: "2025",
+    role: "Developer Intern",
+    title: "Service ticketing system",
+    description:
+      "Collaborated on a web-based ticketing flow for service requests and complaints.",
+  },
+  {
+    year: "2025",
+    role: "Support & Report Administration",
+    title: "Issue documentation",
+    description:
+      "Handled user reports and kept support tickets clear, categorized, and ready for follow-up.",
+  },
 ];
 
 export default function Home() {
-  const [editionDate] = useState(() =>
-    new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      timeZone: "Asia/Jakarta",
-    })
-  );
+  const [theme, setTheme] = useState<Theme>("light");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
-    const onEsc = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMobileNavOpen(false);
-      }
+    const root = document.documentElement;
+    const currentTheme = root.dataset.theme === "dark" ? "dark" : "light";
+    const syncFrame = window.requestAnimationFrame(() => setTheme(currentTheme));
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const syncWithSystem = (event: MediaQueryListEvent) => {
+      if (localStorage.getItem("portfolio-theme")) return;
+      const nextTheme: Theme = event.matches ? "dark" : "light";
+      root.dataset.theme = nextTheme;
+      root.style.colorScheme = nextTheme;
+      setTheme(nextTheme);
     };
 
-    window.addEventListener("keydown", onEsc);
-    return () => window.removeEventListener("keydown", onEsc);
+    media.addEventListener("change", syncWithSystem);
+    return () => {
+      window.cancelAnimationFrame(syncFrame);
+      media.removeEventListener("change", syncWithSystem);
+    };
   }, []);
+
+  useEffect(() => {
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileNavOpen(false);
+    };
+
+    document.body.style.overflow = mobileNavOpen ? "hidden" : "";
+    window.addEventListener("keydown", onEscape);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onEscape);
+    };
+  }, [mobileNavOpen]);
+
+  const toggleTheme = () => {
+    const nextTheme: Theme = theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = nextTheme;
+    document.documentElement.style.colorScheme = nextTheme;
+    localStorage.setItem("portfolio-theme", nextTheme);
+    setTheme(nextTheme);
+  };
+
+  const closeMobileNav = () => setMobileNavOpen(false);
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-ink bg-paper/95 backdrop-blur">
-        <div className="w-full border-b border-ink">
-          <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 px-6 py-2 font-mono text-[11px] uppercase tracking-[0.16em] md:grid-cols-3">
-            <span className="py-1 md:border-r md:border-ink">Vol. 22</span>
-            <span className="py-1 md:border-r md:border-ink md:px-4 md:text-center">Edition 0319</span>
-            <span className="py-1 md:text-right">{editionDate}</span>
-          </div>
-        </div>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
 
-        <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-6 py-4">
-          <a className="font-display text-[clamp(28px,3.2vw,46px)] font-black leading-none" href="#top" aria-label="Home">
+      <header className="site-header">
+        <div className="shell header-row">
+          <a className="wordmark" href="#top" aria-label="Hrafsa, home">
             HRAFSA
           </a>
 
-          <nav className="hidden items-center gap-6 font-ui text-[11px] font-semibold uppercase tracking-[0.16em] md:flex" aria-label="Primary">
-            {navItems.map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="inline-flex min-h-11 items-center transition-colors duration-200 ease-out hover:text-red">
-                {item}
-              </a>
-            ))}
-            <a href="#contact" className="inline-flex min-h-11 items-center border border-ink bg-ink px-7 py-3 text-paper transition-colors duration-200 ease-out hover:bg-paper hover:text-ink">
-              Hire Me
-            </a>
-          </nav>
+          <p className="header-status">
+            <span aria-hidden="true" /> Available for work / Jakarta
+          </p>
 
-          <button className="grid h-11 w-11 place-items-center border border-ink md:hidden" aria-label="Toggle menu" onClick={() => setMobileNavOpen((value) => !value)}>
-            <span className="block h-px w-5 bg-ink" />
-            <span className="block h-px w-5 bg-ink" />
-            <span className="block h-px w-5 bg-ink" />
-          </button>
+          <div className="header-actions">
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={toggleTheme}
+              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+              aria-pressed={theme === "dark"}
+            >
+              <span>Light</span>
+              <i aria-hidden="true"><b /></i>
+              <span>Dark</span>
+            </button>
+            <a className="header-contact" href="mailto:hrafsa.a@gmail.com">
+              Email me
+            </a>
+            <button
+              className="menu-button"
+              type="button"
+              aria-label="Open navigation"
+              aria-expanded={mobileNavOpen}
+              aria-controls="mobile-navigation"
+              onClick={() => setMobileNavOpen(true)}
+            >
+              Menu
+            </button>
+          </div>
         </div>
       </header>
 
-      {mobileNavOpen && (
-        <div className="fixed inset-0 z-50 bg-paper p-6 md:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
-          <button className="ml-auto block min-h-11 border border-ink px-5 py-2 font-ui text-[11px] uppercase tracking-[0.16em]" aria-label="Close menu" onClick={() => setMobileNavOpen(false)}>
+      <div
+        id="mobile-navigation"
+        className={`mobile-navigation ${mobileNavOpen ? "is-open" : ""}`}
+        aria-hidden={!mobileNavOpen}
+      >
+        <div className="mobile-navigation-head">
+          <span>Index</span>
+          <button type="button" onClick={closeMobileNav} aria-label="Close navigation">
             Close
           </button>
-          <nav className="mt-8 grid gap-3" aria-label="Mobile primary">
-            {navItems.map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="inline-flex min-h-11 items-center justify-center border border-ink px-4 py-3 text-center font-ui text-[11px] uppercase tracking-[0.16em]"
-                onClick={() => setMobileNavOpen(false)}
-              >
-                {item}
-              </a>
-            ))}
-            <a href="#contact" className="inline-flex min-h-11 items-center justify-center border border-ink bg-ink px-4 py-3 text-paper" onClick={() => setMobileNavOpen(false)}>
-              Hire Me
-            </a>
-          </nav>
         </div>
-      )}
-
-      <main id="top" className="overflow-x-hidden">
-        <section className="mx-auto grid w-full max-w-[1280px] gap-8 px-6 py-16 md:grid-cols-12">
-          <div className="md:col-span-8">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em]">Jakarta Desk • Web Developer</p>
-            <h1 className="mt-5 font-display text-[clamp(52px,7vw,112px)] font-black leading-[0.9] tracking-[-0.03em]">
-              Crafting Code
-              <br />
-              That Matters.
-            </h1>
-            <p className="drop-cap mt-6 max-w-3xl text-[17px] leading-[1.75]">
-              Driven by a thirst for knowledge and a desire to contribute to impactful projects. I&aposve built experience in both static and dynamic websites, and I&aposm constantly refining my skills through continuous learning. Eager to collaborate and tackle new challenges, I bring a blend of passion, agility, and work to the table.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#projects" className="inline-flex min-h-11 items-center border border-ink bg-ink px-7 py-3 font-ui text-[11px] font-bold uppercase tracking-[0.15em] text-paper transition-colors duration-200 ease-out hover:bg-paper hover:text-ink">
-                View Projects
-              </a>
-              <a href="#contact" className="inline-flex min-h-11 items-center border border-ink px-7 py-3 font-ui text-[11px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 ease-out hover:bg-ink hover:text-paper">
-                Contact Now
-              </a>
-            </div>
-          </div>
-
-          <aside className="md:col-span-4 md:self-start border border-ink bg-muted">
-            <div className="grid min-h-64 place-items-center border-b border-ink bg-paper [background-image:radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px]">
-              <span className="font-mono text-[11px] uppercase tracking-[0.16em]">Profile Photo</span>
-            </div>
-            <div className="grid grid-cols-2 bg-paper">
-              {heroStats.map((stat, index) => (
-                <article
-                  key={stat.label}
-                  className={`p-3 ${index < 2 ? "border-b border-ink" : ""} ${index % 2 === 0 ? "border-r border-ink" : ""}`}
-                >
-                  <strong className="block text-2xl font-black">{stat.value}</strong>
-                  <span className="text-[14px]">{stat.label}</span>
-                </article>
-              ))}
-            </div>
-          </aside>
-        </section>
-
-        <section className="border-y-4 border-ink bg-ink py-3 text-paper">
-          <div className="ticker-track">
-            <div className="ticker-inner whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.16em]">
-              {tickerItems.concat(tickerItems).map((item, index) => (
-                <span key={`${item}-${index}`} className="mr-16 inline-flex min-h-8 items-center gap-3">
-                  <span className="inline-flex min-h-6 items-center bg-red px-2 text-[10px] font-semibold tracking-[0.18em]">BREAKING</span>
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <div className="border-b border-muted py-8 text-center font-display text-xl tracking-[0.8em] text-ink-faint">✧ ✧ ✧</div>
-
-        <section id="about" className="mx-auto grid w-full max-w-[1280px] gap-8 px-6 py-16 md:grid-cols-12">
-          <div className="md:col-span-7">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em]">About</p>
-            <h2 className="mt-4 font-display text-[clamp(36px,5vw,56px)] font-black leading-[0.95]">Authoritative Engineering for Modern Products</h2>
-            <p className="drop-cap mt-5 text-[17px] leading-[1.75]">
-              Driven by a thirst for knowledge and a desire to contribute to impactful projects, Rafsa builds modern websites that blend performance and maintainable code.
-            </p>
-            <div className="mt-7 grid grid-cols-3 border border-ink bg-paper">
-              {skills.map((skill, index) => (
-                (() => {
-                  const skillCols = 3;
-                  const rowStart = Math.floor(index / skillCols) * skillCols;
-                  const itemsInRow = Math.min(skillCols, skills.length - rowStart);
-                  const itemInRow = index - rowStart;
-                  const isLastInRow = itemInRow === itemsInRow - 1;
-                  const lastRowStart = Math.floor((skills.length - 1) / skillCols) * skillCols;
-                  const isLastRow = rowStart === lastRowStart;
-
-                  return (
-                    <article
-                      key={skill}
-                      className={`min-h-11 px-3 pl-3 ${!isLastRow ? "border-b border-ink" : ""} ${!isLastInRow ? "border-r border-ink" : ""}`}
-                    >
-                      <span className="inline-flex min-h-11 items-center text-[11px] font-semibold uppercase tracking-[0.14em]">
-                        {skill}
-                      </span>
-                    </article>
-                  );
-                })()
-              ))}
-            </div>
-          </div>
-
-          <aside className="md:col-span-5 border border-ink bg-muted p-6">
-            <h3 className="font-display text-[28px] font-bold">Field Notes</h3>
-            <div className="mt-4 space-y-3 text-[14px]">
-              <p><span className="font-semibold">Location:</span> Jakarta, Indonesia</p>
-              <p><span className="font-semibold">Availability:</span> Open for Remote Roles</p>
-              <p><span className="font-semibold">Education:</span> S.Pd. Informatics and Computer Engineering Education, Jakarta State University</p>
-            </div>
-            <a href="#contact" className="mt-6 inline-flex min-h-11 items-center border border-ink px-6 py-3 font-ui text-[11px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 ease-out hover:bg-ink hover:text-paper">
-              Download CV
+        <nav aria-label="Mobile navigation">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              onClick={closeMobileNav}
+              tabIndex={mobileNavOpen ? 0 : -1}
+            >
+              {item.label}
             </a>
-          </aside>
+          ))}
+        </nav>
+        <a href="mailto:hrafsa.a@gmail.com" tabIndex={mobileNavOpen ? 0 : -1}>
+          hrafsa.a@gmail.com
+        </a>
+      </div>
+
+      <main id="main-content">
+        <section id="top" className="hero shell">
+          <p className="kicker">Web developer / Product-minded engineering</p>
+          <h1>I build clear, useful web products.</h1>
+          <div className="hero-foot">
+            <p>
+              I turn real needs into responsive digital experiences that people can understand and use.
+            </p>
+            <a className="primary-link" href="mailto:hrafsa.a@gmail.com">
+              Start a conversation
+            </a>
+          </div>
+
+          <dl className="hero-profile" aria-label="Working profile">
+            <div>
+              <dt>Focus</dt>
+              <dd>Useful web products</dd>
+            </div>
+            <div>
+              <dt>Approach</dt>
+              <dd>Clear + responsive</dd>
+            </div>
+            <div>
+              <dt>Core stack</dt>
+              <dd>React / Next.js / Laravel</dd>
+            </div>
+            <div>
+              <dt>Work mode</dt>
+              <dd><span aria-hidden="true" /> Remote / Jakarta</dd>
+            </div>
+          </dl>
         </section>
 
-        <div className="border-b border-muted py-8 text-center font-display text-xl tracking-[0.8em] text-ink-faint">✧ ✧ ✧</div>
+        <section id="work" className="projects shell" aria-labelledby="projects-title">
+          <header className="projects-heading">
+            <div>
+              <p className="section-label">Selected work</p>
+              <h2 id="projects-title">Products built around real use.</h2>
+            </div>
+            <p>{projects.length} project{projects.length === 1 ? "" : "s"} published</p>
+          </header>
 
-        <section id="projects" className="mx-auto w-full max-w-[1280px] px-6 py-16">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em]">Projects</p>
-          <h2 className="mt-3 font-display text-[clamp(36px,5vw,56px)] font-black leading-[0.95]">Published Work</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {projects.map((project) => (
-              <article key={project.title} className="border border-ink bg-paper transition-all duration-200 ease-out hover:-translate-x-[3px] hover:-translate-y-[3px] hover:bg-muted hover:shadow-[5px_5px_0_0_#111111]">
-                {project.image ? (
-                  <div className="relative min-h-44 border-b border-ink bg-muted">
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
-                ) : (
-                  <div className="min-h-44 border-b border-ink bg-muted [background-image:radial-gradient(#000_1px,transparent_1px)] [background-size:14px_14px]" aria-hidden="true" />
-                )}
-                <div className="p-6">
-                  <p className="font-ui text-[11px] uppercase tracking-[0.14em] text-red">{project.tag}</p>
-                  <h3 className="mt-2 text-[24px] font-bold">{project.title}</h3>
-                  <p className="mt-2 text-[16px]">{project.desc}</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <a
-                      href={project.demoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex min-h-11 items-center border border-ink bg-ink px-4 py-2 font-ui text-[11px] font-bold uppercase tracking-[0.14em] text-paper transition-colors duration-200 ease-out hover:bg-paper hover:text-ink"
-                    >
-                      Demo
-                    </a>
-                    <a
-                      href={project.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex min-h-11 items-center border border-ink px-4 py-2 font-ui text-[11px] font-bold uppercase tracking-[0.14em] transition-colors duration-200 ease-out hover:bg-ink hover:text-paper"
-                    >
-                      Source
-                    </a>
-                  </div>
+          <div className="project-list">
+            {projects.map((project, index) => (
+              <article className="project-row" key={project.title}>
+                <div className="project-index">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <time>{project.year}</time>
+                </div>
+
+                <div className="project-thumbnail">
+                  <Image
+                    src={project.image}
+                    alt={`${project.title} interface`}
+                    width={480}
+                    height={270}
+                    sizes="(max-width: 760px) 100vw, 300px"
+                  />
+                </div>
+
+                <div className="project-summary">
+                  <p>{project.type} / {project.role}</p>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <ul aria-label={`${project.title} traits`}>
+                    {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+                  </ul>
+                </div>
+
+                <div className="project-links">
+                  <a href={project.demoUrl} target="_blank" rel="noreferrer">Live project</a>
+                  <a href={project.sourceUrl} target="_blank" rel="noreferrer">Source code</a>
                 </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section id="experience" className="bg-ink py-16 text-paper">
-          <div className="mx-auto w-full max-w-[1280px] px-6">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-red">Experience</p>
-            <h2 className="mt-3 font-display text-[clamp(36px,5vw,56px)] font-black leading-[0.95]">Career Timeline</h2>
-            <div className="mt-7 grid gap-4 md:grid-cols-2">
-              <article className="border border-white/15 bg-white/5 p-6">
-                <p className="font-ui text-[11px] uppercase tracking-[0.14em] text-red">2025-2025</p>
-                <h3 className="mt-2 text-[24px] font-bold">Admin Dashboard</h3>
-                <p className="mt-2 text-paper/70">Assisted in handling user reports and ensuring tickets were properly documented and processed.</p>
-              </article>
-              <article className="border border-white/15 bg-white/5 p-6">
-                <p className="font-ui text-[11px] uppercase tracking-[0.14em] text-red">2025-2025</p>
-                <h3 className="mt-2 text-[24px] font-bold">Developer Intern</h3>
-                <p className="mt-2 text-paper/70">Collaborate on creating a program ticketing system for complaints and services.</p>
-              </article>
+        <div className="studio-layout shell">
+          <aside id="about" className="studio-index">
+            <div className="index-inner">
+              <p className="section-label">Studio index</p>
+              <nav aria-label="Page index">
+                {navItems.map((item) => (
+                  <a key={item.href} href={item.href}>{item.label}</a>
+                ))}
+              </nav>
+
+              <div className="index-block">
+                <h2>About</h2>
+                <p>
+                  Hashemi Rafsa Alfatih is a Jakarta-based web developer with a background in Informatics and Computer Engineering Education.
+                </p>
+              </div>
+
+              <div className="index-block">
+                <h2>Capabilities</h2>
+                <p>React, Next.js, JavaScript, Tailwind CSS, PHP, Laravel, and MySQL.</p>
+              </div>
+
+              <div className="index-block availability-copy">
+                <h2>Availability</h2>
+                <p><span aria-hidden="true" /> Open to remote, full-time, and freelance work.</p>
+              </div>
+
+              <div className="index-links">
+                <a href="mailto:hrafsa.a@gmail.com">Email</a>
+                <a href="https://github.com/hrafsa" target="_blank" rel="noreferrer">GitHub</a>
+              </div>
+            </div>
+          </aside>
+
+          <div className="studio-content">
+            <section id="experience" className="experience" aria-labelledby="experience-title">
+              <p className="section-label">Experience</p>
+              <h2 id="experience-title">Learning through real work.</h2>
+              <div className="experience-rows">
+                {experiences.map((experience) => (
+                  <article key={experience.role}>
+                    <time>{experience.year}</time>
+                    <div>
+                      <h3>{experience.role}</h3>
+                      <strong>{experience.title}</strong>
+                    </div>
+                    <p>{experience.description}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <section id="contact" className="contact-band">
+          <div className="shell contact-row">
+            <div>
+              <p className="section-label">Contact</p>
+              <h2>Have something useful to build?</h2>
+            </div>
+            <div className="contact-action">
+              <dl className="contact-details">
+                <div>
+                  <dt>Work type</dt>
+                  <dd>Full-time / Freelance / Collaboration</dd>
+                </div>
+                <div>
+                  <dt>Location</dt>
+                  <dd>Jakarta / Remote</dd>
+                </div>
+              </dl>
+              <a href="mailto:hrafsa.a@gmail.com">
+                <span>Email</span>
+                <strong>hrafsa.a@gmail.com</strong>
+              </a>
             </div>
           </div>
         </section>
-
-        <section id="contact" className="border-t border-ink px-6 py-16">
-          <div className="mx-auto grid w-full max-w-[1280px] gap-8 md:grid-cols-2">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em]">Contact</p>
-              <h2 className="mt-3 font-display text-[clamp(36px,5vw,56px)] font-black leading-[0.95]">Let us build something meaningful.</h2>
-              <p className="mt-5 max-w-xl text-[17px] leading-[1.75]">Open to collaborations, freelance projects, and full-time remote opportunities.</p>
-              <div className="mt-8 space-y-3">
-                <a href="mailto:rlmzmasteriwan@gmail.com" className="flex min-h-11 items-center gap-3 border border-ink p-3 transition-colors duration-200 ease-out hover:text-red">
-                  <span className="grid h-11 w-11 place-items-center border border-ink font-mono text-[14px]">@</span>
-                  <span>
-                    <span className="block font-semibold text-[14px]">Email</span>
-                    <span className="block font-mono text-[12px] text-ink-soft">hrafsa.a@gmail.com</span>
-                  </span>
-                </a>
-                <a href="https://github.com/hrafsa" className="flex min-h-11 items-center gap-3 border border-ink p-3 transition-colors duration-200 ease-out hover:text-red">
-                  <span className="grid h-11 w-11 place-items-center border border-ink font-mono text-[14px]">GH</span>
-                  <span>
-                    <span className="block font-semibold text-[14px]">GitHub</span>
-                    <span className="block font-mono text-[12px] text-ink-soft">github.com/hrafsa</span>
-                  </span>
-                </a>
-              </div>
-            </div>
-
-            <form className="border border-ink bg-muted p-6">
-              <label className="mb-4 block">
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em]">Name</span>
-                <input className="mt-2 block min-h-11 w-full border-b-2 border-ink bg-transparent px-1 py-2 font-mono text-[14px] outline-none focus:bg-muted" />
-              </label>
-              <label className="mb-4 block">
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em]">Email</span>
-                <input className="mt-2 block min-h-11 w-full border-b-2 border-ink bg-transparent px-1 py-2 font-mono text-[14px] outline-none focus:bg-muted" />
-              </label>
-              <label className="mb-6 block">
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em]">Message</span>
-                <textarea className="mt-2 block min-h-28 w-full border-b-2 border-ink bg-transparent px-1 py-2 font-mono text-[14px] outline-none focus:bg-muted" />
-              </label>
-              <button className="inline-flex min-h-11 items-center border border-ink bg-ink px-7 py-3 font-ui text-[11px] font-bold uppercase tracking-[0.15em] text-paper transition-colors duration-200 ease-out hover:bg-paper hover:text-ink">
-                Send Message
-              </button>
-            </form>
-          </div>
-        </section>
-
-        <footer className="border-t border-ink px-6 py-12">
-          <div className="mx-auto grid w-full max-w-[1280px] gap-8 md:grid-cols-4">
-            <div className="md:col-span-2">
-              <p className="font-display text-[34px] font-black leading-none">Hashemi Rafsa Alfatih</p>
-              <p className="mt-3 max-w-xl text-[16px] leading-[1.75]">Editorial-style portfolio focused on robust engineering and clear product communication.</p>
-            </div>
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em]">Navigation</p>
-              <div className="mt-3 space-y-2 text-[14px]">
-                <a className="block transition-colors duration-200 ease-out hover:text-red" href="#about">About</a>
-                <a className="block transition-colors duration-200 ease-out hover:text-red" href="#projects">Projects</a>
-                <a className="block transition-colors duration-200 ease-out hover:text-red" href="#experience">Experience</a>
-              </div>
-            </div>
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em]">Edition</p>
-              <p className="mt-3 font-mono text-[12px] text-ink-soft">Vol. 22</p>
-              <p className="font-mono text-[12px] text-ink-soft">Edition 0319</p>
-            </div>
-          </div>
-        </footer>
       </main>
+
+      <footer className="site-footer">
+        <div className="shell footer-row">
+          <span>Hashemi Rafsa Alfatih</span>
+          <span>Web developer / Jakarta</span>
+          <a href="#top">Back to top</a>
+        </div>
+      </footer>
     </>
   );
 }

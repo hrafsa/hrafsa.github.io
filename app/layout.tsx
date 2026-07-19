@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Lora, Playfair_Display } from "next/font/google";
+import { Archivo_Black, IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./tailwind.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo-black",
   subsets: ["latin"],
+  weight: "400",
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const jetBrainsMono = JetBrains_Mono({
@@ -12,35 +20,37 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-});
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "Hashemi Rafsa Alfatih | Web Developer",
-  description: "Newsprint-style portfolio",
+  description: "Portfolio of Hashemi Rafsa Alfatih, a web developer based in Jakarta, Indonesia.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const themeInitializer = `
+  (() => {
+    try {
+      const saved = localStorage.getItem("portfolio-theme");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = saved === "light" || saved === "dark" ? saved : systemDark ? "dark" : "light";
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+    } catch (_) {
+      document.documentElement.dataset.theme = "light";
+      document.documentElement.style.colorScheme = "light";
+    }
+  })();
+`;
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetBrainsMono.variable} ${lora.variable} ${playfairDisplay.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${archivoBlack.variable} ${ibmPlexSans.variable} ${jetBrainsMono.variable}`}
     >
-      <body
-        suppressHydrationWarning
-        className="min-h-full flex flex-col bg-paper text-ink font-body leading-7"
-      >
+      <body>
+        <Script id="theme-initializer" strategy="beforeInteractive">
+          {themeInitializer}
+        </Script>
         {children}
       </body>
     </html>
