@@ -12,7 +12,17 @@ const navItems = [
   { label: "Contact", href: "#contact" },
 ];
 
-const projects = [
+const projects: Array<{
+  title: string;
+  year: string;
+  type: string;
+  role: string;
+  description: string;
+  image: string;
+  demoUrl?: string;
+  sourceUrl: string;
+  tags: string[];
+}> = [
   {
     title: "MLBB Draft",
     year: "2026",
@@ -24,6 +34,18 @@ const projects = [
     demoUrl: "https://mlbb-drafting.vercel.app",
     sourceUrl: "https://github.com/hrafsa/mlbb-drafting",
     tags: ["Responsive UI", "Draft analysis", "Open source"],
+  },
+  {
+    title: "Meowdoku Solver",
+    year: "2026",
+    type: "Web application",
+    role: "Design & development",
+    description:
+      "A cat-themed Sudoku solver designed to solve and visualize puzzles with an engaging, interactive interface.",
+    image: "/images/meowdoku-solver.png",
+    demoUrl: "https://meowdoku-solver.vercel.app",
+    sourceUrl: "https://github.com/hrafsa/meowdoku-solver",
+    tags: ["Sudoku Solver", "Interactive UI", "Open source"],
   },
 ];
 
@@ -235,7 +257,9 @@ export default function Home() {
                 </div>
 
                 <div className="project-links">
-                  <a href={project.demoUrl} target="_blank" rel="noreferrer">Live project</a>
+                  {project.demoUrl && (
+                    <a href={project.demoUrl} target="_blank" rel="noreferrer">Live project</a>
+                  )}
                   <a href={project.sourceUrl} target="_blank" rel="noreferrer">Source code</a>
                 </div>
               </article>
