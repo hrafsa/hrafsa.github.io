@@ -1,58 +1,14 @@
 import type { Metadata } from "next";
-import { Archivo_Black, IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
 import "./tailwind.css";
-
-const archivoBlack = Archivo_Black({
-  variable: "--font-archivo-black",
-  subsets: ["latin"],
-  weight: "400",
-});
-
-const ibmPlexSans = IBM_Plex_Sans({
-  variable: "--font-ibm-plex-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Hashemi Rafsa Alfatih | Web Developer",
-  description: "Portfolio of Hashemi Rafsa Alfatih, a web developer based in Jakarta, Indonesia.",
+  title: "hrafsa | Developer",
+  description: "Developer exploring ideas and building useful things.",
 };
-
-const themeInitializer = `
-  (() => {
-    try {
-      const saved = localStorage.getItem("portfolio-theme");
-      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const theme = saved === "light" || saved === "dark" ? saved : systemDark ? "dark" : "light";
-      document.documentElement.dataset.theme = theme;
-      document.documentElement.style.colorScheme = theme;
-    } catch (_) {
-      document.documentElement.dataset.theme = "light";
-      document.documentElement.style.colorScheme = "light";
-    }
-  })();
-`;
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${archivoBlack.variable} ${ibmPlexSans.variable} ${jetBrainsMono.variable}`}
-    >
-      <body>
-        <Script id="theme-initializer" strategy="beforeInteractive">
-          {themeInitializer}
-        </Script>
-        {children}
-      </body>
-    </html>
-  );
+  return <html lang="en"><head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+    {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head><body>{children}</body></html>;
 }

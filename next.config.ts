@@ -5,6 +5,8 @@ const isUserPageRepo = repoName.endsWith(".github.io");
 const basePath = !isUserPageRepo && repoName ? `/${repoName}` : "";
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
+  turbopack: { root: process.cwd() },
   output: "export",
   trailingSlash: true,
   images: {
